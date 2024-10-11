@@ -1,18 +1,21 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template
+from flask_bootstrap import Bootstrap
+from flask_moment import Moment
+from datetime import datetime
 
 app = Flask(__name__)
 
+moment = Moment(app)
+bootstrap = Bootstrap(app)
+
 @app.route('/')
-def index():
-    return render_template('index.html')
+def hello_world():
+    return render_template('index.html', current_time=datetime.utcnow())
 
-@app.route('/user/<name>/<prontuary>/<institution>')
-def identification(name, prontuary, institution):
-    return render_template('identification.html', name=name, prontuary=prontuary, institution=institution)
+@app.route('/user/<username>')
+def hello_user(username):
+    return render_template('index.html', username=username)
 
-@app.route('/contextorequisicao')
-def requisition_context():
-    user_agent = request.headers.get('User-Agent')
-    remote_ip = request.remote_addr
-    host_app = request.host
-    return render_template('requisitionContext.html', user_agent=user_agent, remote_ip=remote_ip, host_app=host_app)
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
